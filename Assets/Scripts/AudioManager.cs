@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Audio;
-using System.Collections.Generic;
 
 namespace CoreGameplay.Audio
 {
@@ -52,6 +51,9 @@ namespace CoreGameplay.Audio
 
             if (backgroundMusic != null)
                 PlayMusic(backgroundMusic);
+
+            // Проверка параметров AudioMixer при старте
+            ValidateMixerParameters();
         }
 
         #region Music Control
@@ -63,20 +65,9 @@ namespace CoreGameplay.Audio
             musicSource.Play();
         }
 
-        public void StopMusic()
-        {
-            musicSource.Stop();
-        }
-
-        public void PauseMusic()
-        {
-            musicSource.Pause();
-        }
-
-        public void ResumeMusic()
-        {
-            musicSource.UnPause();
-        }
+        public void StopMusic() => musicSource.Stop();
+        public void PauseMusic() => musicSource.Pause();
+        public void ResumeMusic() => musicSource.UnPause();
 
         #endregion
 
@@ -109,7 +100,7 @@ namespace CoreGameplay.Audio
 
         #endregion
 
-        #region Volume & Mute Settings (публичные методы для UI)
+        #region Volume & Mute Settings
 
         public void SetMusicVolume(float volume)
         {
@@ -147,21 +138,82 @@ namespace CoreGameplay.Audio
         private void ApplyMusicVolume()
         {
             float db = musicMuted ? -80f : LinearToDecibel(musicVolume);
-            audioMixer?.SetFloat(MUSIC_VOLUME_PARAM, db);
+
+            // Устанавливаем параметр в AudioMixer (если он доступен)
+            if (audioMixer != null)
+            {
+                if (!audioMixer.SetFloat(MUSIC_VOLUME_PARAM, db))
+                {
+                    Debug.LogWarning($"AudioMixer: не удалось установить параметр '{MUSIC_VOLUME_PARAM}'. " +
+                                     "Проверьте, что он экспонирован в AudioMixer.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("AudioMixer не назначен в AudioManager.");
+            }
+
+            // Громкость источника музыки теперь управляется ТОЛЬКО через Mixer.
+            // Если AudioMixer отсутствует, используем прямое управление как запасной вариант.
             if (musicSource != null)
-                musicSource.volume = musicMuted ? 0f : musicVolume;
+            {
+                if (audioMixer != null)
+                {
+                    // Если AudioMixer назначен, громкость источника должна быть 1, чтобы миксер управлял ей.
+                    musicSource.volume = 1f;
+                }
+                else
+                {
+                    // Запасной вариант без миксера
+                    musicSource.volume = musicMuted ? 0f : musicVolume;
+                }
+            }
         }
 
         private void ApplySFXVolume()
         {
             float db = sfxMuted ? -80f : LinearToDecibel(sfxVolume);
-            audioMixer?.SetFloat(SFX_VOLUME_PARAM, db);
+
+            if (audioMixer != null)
+            {
+                if (!audioMixer.SetFloat(SFX_VOLUME_PARAM, db))
+                {
+                    Debug.LogWarning($"AudioMixer: не удалось установить параметр '{SFX_VOLUME_PARAM}'. " +
+                                     "Проверьте, что он экспонирован в AudioMixer.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("AudioMixer не назначен в AudioManager.");
+            }
         }
 
         private float LinearToDecibel(float linear)
         {
             return linear > 0.0001f ? 20f * Mathf.Log10(linear) : -80f;
         }
+
+        private void ValidateMixerParameters()
+        {
+            if (audioMixer == null) return;
+
+            float dummy;
+            if (!audioMixer.GetFloat(MUSIC_VOLUME_PARAM, out dummy))
+            {
+                Debug.LogError($"Параметр '{MUSIC_VOLUME_PARAM}' не найден в AudioMixer! " +
+                               "Откройте окно Audio Mixer, выберите нужную группу, кликните правой кнопкой по " +
+                               "названию параметра в инспекторе (верхняя панель) и добавьте exposed параметр с таким именем.");
+            }
+            if (!audioMixer.GetFloat(SFX_VOLUME_PARAM, out dummy))
+            {
+                Debug.LogError($"Параметр '{SFX_VOLUME_PARAM}' не найден в AudioMixer! " +
+                               "Добавьте его аналогично MusicVolume.");
+            }
+        }
+
+        #endregion
+
+        #region Persistence
 
         private void SaveSettings()
         {

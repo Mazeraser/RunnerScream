@@ -415,9 +415,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIControler, Assembly-CSharp
-        m_MethodName: Restart
+      - m_Target: {fileID: 1662513946}
+        m_TargetAssemblyTypeName: CoreGameplay.UI.UIController, Assembly-CSharp
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -963,7 +963,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &210568182
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1749,9 +1749,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIControler, Assembly-CSharp
-        m_MethodName: Restart
+      - m_Target: {fileID: 1662513946}
+        m_TargetAssemblyTypeName: CoreGameplay.UI.UIController, Assembly-CSharp
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2441,8 +2441,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIControler, Assembly-CSharp
+      - m_Target: {fileID: 1662513946}
+        m_TargetAssemblyTypeName: CoreGameplay.UI.UIController, Assembly-CSharp
         m_MethodName: LoadGarage
         m_Mode: 1
         m_Arguments:
@@ -3001,8 +3001,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIControler, Assembly-CSharp
+      - m_Target: {fileID: 1662513946}
+        m_TargetAssemblyTypeName: CoreGameplay.UI.UIController, Assembly-CSharp
         m_MethodName: SetPaused
         m_Mode: 6
         m_Arguments:
@@ -3897,8 +3897,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIControler, Assembly-CSharp
+      - m_Target: {fileID: 1662513946}
+        m_TargetAssemblyTypeName: CoreGameplay.UI.UIController, Assembly-CSharp
         m_MethodName: LoadGarage
         m_Mode: 1
         m_Arguments:
@@ -5687,7 +5687,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 0000
+  m_Text: 10
 --- !u!1 &1637577575
 GameObject:
   m_ObjectHideFlags: 0
@@ -6629,8 +6629,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIControler, Assembly-CSharp
+      - m_Target: {fileID: 1662513946}
+        m_TargetAssemblyTypeName: CoreGameplay.UI.UIController, Assembly-CSharp
         m_MethodName: SetPaused
         m_Mode: 6
         m_Arguments:

@@ -276,7 +276,7 @@ namespace Meta
         private void OnAdDisplayed(LevelPlayAdInfo adInfo)
         {
             Log("📺 Реклама показана на экране");
-            ReportAdActivity(AdActivity.Opened);
+            //ReportAdActivity(AdActivity.Opened);
         }
         
         private void OnAdDisplayFailed(LevelPlayAdInfo adInfo, LevelPlayAdError error)
@@ -296,7 +296,7 @@ namespace Meta
         {
             isRewarded = true;
             Log($"🎉 Игрок получил награду! Amount: {reward.Amount}");
-            ReportAdActivity(AdActivity.End);
+            //ReportAdActivity(AdActivity.End);
             
             // Выдаём награду через PlayFab
             RewardPlayer();
@@ -312,7 +312,7 @@ namespace Meta
             isShowingAd = false;
             isLoadingAd = false;
             Log("🔒 Реклама закрыта");
-            ReportAdActivity(AdActivity.Closed);
+            //ReportAdActivity(AdActivity.Closed);
             
             // Проверяем, была ли получена награда
             if (isRewarded)
@@ -347,29 +347,19 @@ namespace Meta
         
         private void RewardPlayer()
         {
-            Log("Запрос награды через PlayFab...");
+            Log("Выдача награды за рекламу...");
+            int rewardAmount = 10; // сколько кристаллов давать за рекламу
             
-            var request = new RewardAdActivityRequest
-            {
-                PlacementId = StringPlacementId,
-                RewardId = StringRewardId
-            };
-            
-            PlayFabClientAPI.RewardAdActivity(request,
-                result =>
+            Currency.PlayFabCurrency.AddCurrency("HC", rewardAmount,
+                onSuccess: (newBalance) =>
                 {
-                    Log("✅ PlayFab: Награда успешно выдана!");
-                    
-                    // Получаем обновлённый баланс
-                    Currency.PlayFabCurrency.GetCurrencyBalance();
-                    
-                    // Вызываем колбэк успеха
+                    Log($"✅ Награда выдана: +{rewardAmount} кристаллов. Баланс: {newBalance}");
                     _onRewardSuccess?.Invoke();
                     ClearCallbacks();
                 },
-                error =>
+                onError: (error) =>
                 {
-                    LogError($"❌ PlayFab: Ошибка выдачи награды: {error.GenerateErrorReport()}");
+                    LogError($"Ошибка выдачи награды: {error}");
                     _onRewardFailed?.Invoke("Ошибка выдачи награды");
                     ClearCallbacks();
                 }

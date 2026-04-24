@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a23e4b473cdcb6e25822ccfa12bc0cfe, type: 3}
   m_Name: CarData_2
   m_EditorClassIdentifier: 
-  carId: 0
+  carId: 2
   carName: Third car
   description: Third car
   priceSoft: 100
@@ -25,5 +25,3 @@ MonoBehaviour:
   baseMaxSpeed: 50
   baseAcceleration: 0.75
   baseHealth: 2
-  isStarter: 0
-  isUnlockedByDefault: 0

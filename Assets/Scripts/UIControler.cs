@@ -73,7 +73,7 @@ namespace CoreGameplay.UI
                 garageButton.onClick.AddListener(LoadGarage);
             
             if (reviveByAdButton != null)
-                reviveByAdButton.onClick.AddListener(ContinueByAd);
+                reviveByAdButton.onClick.AddListener(Continue);
 
             if (pauseMusicSlider != null)
             {

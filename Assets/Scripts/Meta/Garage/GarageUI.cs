@@ -1,3 +1,4 @@
+// GarageUI.cs
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -21,14 +22,15 @@ namespace Garage
         [Header("Buttons")]
         [SerializeField] private Button purchaseButton;   // кнопка "Купить"
         [SerializeField] private Button selectButton;     // кнопка "Выбрать"
-        [SerializeField] private Button selectedButton;   // кнопка "Выбрано" (просто индикатор)
         [SerializeField] private TextMeshProUGUI priceText;
         
         [Header("Navigation")]
         [SerializeField] private Button prevButton;
         [SerializeField] private Button nextButton;
         [SerializeField] private Button closeButton;
-        
+
+        // Удалено поле selectedButton
+
         private void Start()
         {
             if (GarageManager.Instance == null)
@@ -37,11 +39,9 @@ namespace Garage
                 return;
             }
             
-            // Подписываемся на события менеджера для автоматического обновления UI
             GarageManager.Instance.OnCarChanged += OnCarChangedHandler;
             GarageManager.Instance.OnCarPurchased += OnCarPurchasedHandler;
             
-            // Назначаем обработчики кнопок
             if (prevButton != null)
                 prevButton.onClick.AddListener(() => GarageManager.Instance.PreviousCar());
             if (nextButton != null)
@@ -52,17 +52,10 @@ namespace Garage
                 purchaseButton.onClick.AddListener(() => GarageManager.Instance.PurchaseCurrentCar());
             if (closeButton != null)
                 closeButton.onClick.AddListener(CloseGarage);
-            
-            // Изначально кнопка "Выбрано" неинтерактивна (просто индикатор)
-            if (selectedButton != null)
-                selectedButton.interactable = false;
-            
-            garagePanel.SetActive(false);
         }
         
         private void OnDestroy()
         {
-            // Отписываемся от событий при уничтожении
             if (GarageManager.Instance != null)
             {
                 GarageManager.Instance.OnCarChanged -= OnCarChangedHandler;
@@ -72,13 +65,11 @@ namespace Garage
         
         private void OnCarChangedHandler(CarDataSO carData)
         {
-            // При переключении машины обновляем UI
             UpdateUI(carData, IsCarUnlocked(carData), IsCarSelected(carData));
         }
         
         private void OnCarPurchasedHandler(CarDataSO carData)
         {
-            // После покупки обновляем валюту и текущий UI
             if (MenuCurrencyUtils.Instance != null)
                 MenuCurrencyUtils.Instance.RefreshCurrencyDisplay();
             
@@ -107,7 +98,6 @@ namespace Garage
         {
             if (carData == null) return;
             
-            // Основная информация
             if (carNameText != null) carNameText.text = carData.carName;
             if (carDescriptionText != null) carDescriptionText.text = carData.description;
             
@@ -131,25 +121,19 @@ namespace Garage
         
         private void UpdateButtonsState(bool isUnlocked, bool isSelected)
         {
-            // Кнопка "Купить" активна только если машина НЕ разблокирована
+            // Кнопка "Купить" активна только если НЕ разблокирована
             if (purchaseButton != null)
                 purchaseButton.interactable = !isUnlocked;
             
-            // Кнопка "Выбрать" активна только если машина разблокирована И НЕ выбрана
+            // Кнопка "Выбрать" активна, если разблокирована И НЕ выбрана
             if (selectButton != null)
-                selectButton.interactable = isUnlocked && !isSelected;
-            
-            // Кнопка "Выбрано" — просто индикатор, её интерактивность всегда false
-            // (можно также менять цвет текста или спрайт, но она не должна быть кликабельной)
-            if (selectedButton != null)
             {
-                selectedButton.interactable = false;
-                // Дополнительно можно менять текст или цвет, чтобы показать статус
-                var text = selectedButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (text != null)
-                    text.text = isSelected ? "ВЫБРАНО" : "ВЫБРАНО";
-                // Можно изменить цвет, если выбрано
-                // text.color = isSelected ? Color.green : Color.gray;
+                selectButton.interactable = isUnlocked && !isSelected;
+                
+                // Меняем текст на кнопке
+                var btnText = selectButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (btnText != null)
+                    btnText.text = isSelected ? "ВЫБРАНО" : "ВЫБРАТЬ";
             }
         }
         
@@ -177,7 +161,6 @@ namespace Garage
         {
             if (GarageManager.Instance == null) return;
             
-            // Используем GetAllCars() вместо GetAvailableCars(), чтобы навигация работала по всем машинам
             var allCars = GarageManager.Instance.GetAllCars();
             bool hasMultiple = allCars.Count > 1;
             
@@ -185,7 +168,6 @@ namespace Garage
             if (nextButton != null) nextButton.interactable = hasMultiple;
         }
         
-        // Вспомогательные методы для получения статуса машины (чтобы не обращаться к UserData напрямую в обработчиках)
         private bool IsCarUnlocked(CarDataSO carData)
         {
             var data = DataBase.UserData.GetCarData(carData.carId);

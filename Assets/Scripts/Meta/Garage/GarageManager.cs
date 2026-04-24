@@ -67,13 +67,11 @@ namespace Garage
         private void LoadSelectedCar()
         {
             int selectedId = DataBase.UserData.SelectedCar;
-            currentCarData = CarsDatabase.Instance.GetCarById(selectedId);
-            
-            // Ищем индекс выбранной машины в ОБЩЕМ списке
             int foundIndex = -1;
+            
             for (int i = 0; i < allCars.Count; i++)
             {
-                if (allCars[i].carId == currentCarData.carId)
+                if (allCars[i].carId == selectedId)
                 {
                     foundIndex = i;
                     break;
@@ -87,10 +85,12 @@ namespace Garage
             }
             else
             {
-                // Если выбранная машина не найдена (например, данные повреждены), берём первую доступную
+                // Выбранная машина не найдена в общем списке — фиксим выбор на первой доступной
                 currentCarIndex = 0;
                 currentCarData = allCars[0];
-                Debug.LogWarning($"Машина с ID {selectedId} не найдена в базе. Выбрана {currentCarData.carName}");
+                DataBase.UserData.SelectedCar = currentCarData.carId;
+                DataBase.UserData.UpdateData();
+                Debug.LogWarning($"Машина с ID {selectedId} не найдена. Автоматически выбрана {currentCarData.carName} (ID {currentCarData.carId})");
             }
             
             SpawnCarPreview();
