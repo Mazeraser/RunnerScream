@@ -97,6 +97,8 @@ namespace Meta
             
             if (hardMoneyText != null)
                 hardMoneyText.text = DataBase.UserData.HardMoney.ToString();
+
+            BackToMain();
         }
         
         void StartGame()
@@ -105,8 +107,9 @@ namespace Meta
             SceneManager.LoadScene(2);
         }
         
-        void OpenGarage()
+        public void OpenGarage()
         {
+            Debug.Log("[MainMenuUI] Открывается гараж...");
             mainPanel.SetActive(false);
             garagePanel.SetActive(true);
         }

@@ -33,6 +33,8 @@ namespace CoreGameplay
                 playerRenderer = GetComponentInChildren<Renderer>();
             if (playerRenderer != null)
                 originalColor = playerRenderer.material.color;
+
+            UIController.SetHealth(currentHealth);
         }
 
         void OnTriggerEnter(Collider other)
